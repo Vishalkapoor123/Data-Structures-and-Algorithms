@@ -12,19 +12,19 @@ class BinaryTree:
     def insert(self, root, data):
         newNode = Node(data)
         if(root == None):
-            root = newNode
+            return newNode
         if(data < root.data):
             root.left = self.insert(root.left, data)
         elif(data > root.data):
             root.right = self.insert(root.right, data)
         elif(data == root.data):
             return  root
-        return newNode
+        return root
             
     #Cliennt facing method
     def insert_client(self, data):
         temp = self.root
-        self.insert(temp,data)
+        self.root = self.insert(temp,data)
 
     def search(self, data):
         temp = self.root
@@ -38,7 +38,44 @@ class BinaryTree:
         if(temp == None):
             return False
 
+    def min(self, root):
+        if(root.left==None): return root
+        elif(root.left):
+            return self.min(root.left)
 
+    def min_client(self):
+        temp=self.root
+        return self.min(temp)
+
+    def deleteMin(self,root):
+        if(root.left==None):
+            return root.right
+        root.left = self.deleteMin(root.left)
+        return root
+
+    #Internal delete method i.e. not client facing
+    def delete(self, root, data):
+        if(root == None): return None
+        if(root.data<data):
+            root.left = self.delete(root.left , data)
+        elif(root.data > data):
+            root.right = self.delete(root.right, data)
+        else:
+            temp = root
+            root = self.min(temp.right)
+            root.right = self.deleteMin(temp.right)
+            root.left = temp.left
+        return root
+            
+    #Cliennt facing delete method
+    def delete_client(self, data):
+        temp = self.root
+        self.root = self.delete(temp,data)
+
+    def test(self):
+        print(self.root.left.data)
+        print(self.root.left.left.data)
+    
     #Internal method
     def inorder(self, root):
         if(root.left):
@@ -60,6 +97,15 @@ if __name__ == '__main__':
     tree = BinaryTree(5)
     tree.insert_client(1)
     tree.insert_client(10)
+    tree.insert_client(3)
+    tree.insert_client(7)
+    tree.insert_client(0)
+    tree.insert_client(11)
+    tree.inorder_client() 
+    # tree.test() 
+    print(tree.search(1))
+    tree.delete_client(5)
+    print("minimum {}".format(tree.min_client().data))
     tree.inorder_client()  
 
 
